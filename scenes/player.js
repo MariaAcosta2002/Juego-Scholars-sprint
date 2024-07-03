@@ -81,7 +81,7 @@ export class Player{
             this.Player.flipX = false
         }
 
-        if(this.keyW.isDown && this.Player.body.blocked.down ){//cambiamos touching por blocked
+        if(this.keyW.isDown && this.Player.body.blocked.down ){
             this.Player.setVelocityY(-400);
             this.Player.play('Jump', true)
         }
