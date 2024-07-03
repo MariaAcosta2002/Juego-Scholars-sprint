@@ -4,26 +4,36 @@ export class GameOverScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('gameOver', 'assets/img/gameover.png');
+        this.load.image('gameOver', 'assets/img/gameover.jpg');
         this.load.image('btnRestart', 'assets/img/reinicia.png');
         this.load.image('btnMenu', 'assets/img/regresar.png');
+        this.load.image('btnInicio', 'assets/img/equis.png');
     }
 
     create() {
         const { width, height } = this.sys.game.config;
 
-        this.add.image(width / 2, height / 2, 'gameOver').setOrigin(0.5);
+        const gameOverImage = this.add.image(width / 2, height / 2, 'gameOver').setOrigin(0.5);
+        gameOverImage.displayWidth = width;
+        gameOverImage.displayHeight = height;
 
-        this.botonRestart = this.add.image(width / 2, height / 2 + 100, 'btnRestart').setInteractive();
-        this.botonRestart.on('pointerdown', () => {
-            this.scene.start('level1');
+        const buttonY = height / 2 + 200;
+        const buttonSpacing = 150;
+        const buttonStartX = width / 2 - buttonSpacing;
+
+        let botonRestart = this.add.image(buttonStartX, buttonY, 'btnRestart').setInteractive();
+        botonRestart.on('pointerdown', () => {
+            this.scene.start('level2');
         });
 
-        this.botonMenu = this.add.image(width / 2, height / 2 + 180, 'btnMenu').setInteractive();
-        this.botonMenu.on('pointerdown', () => {
+        let botonMenu = this.add.image(width / 2, buttonY, 'btnMenu').setInteractive();
+        botonMenu.on('pointerdown', () => {
             this.scene.start('niveles');
         });
 
-        this.add.text(width / 2, height / 2 - 200, 'Game Over', { fontSize: '64px', fill: '#FFF' }).setOrigin(0.5);
+        let botonInicio = this.add.image(width / 2 + buttonSpacing, buttonY, 'btnInicio').setInteractive();
+        botonInicio.on('pointerdown', () => {
+            this.scene.start('start');
+        });
     }
 }

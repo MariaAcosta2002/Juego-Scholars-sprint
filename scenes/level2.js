@@ -41,6 +41,8 @@ export class level2 extends Phaser.Scene{
         // Imagen de pausa
         this.pausedImage = this.add.image(width / 2, height / 2, 'paused').setOrigin(0.5);
         this.pausedImage.setVisible(false); // Ocultar inicialmente
+
+        this.scene.launch('GameOverScene');
     }
 
     update(time, delta) {
