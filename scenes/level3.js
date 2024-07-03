@@ -1,10 +1,12 @@
 import { Player2 } from "./Player2.js";
+import { Player3 } from "./player3.js";
 
 export class level3 extends Phaser.Scene {
     constructor() {
         super({ key: 'level3' });
 
         this.player2 = new Player2(this);
+        this.Player3 = new Player3(this);
     }
 
     preload() {
@@ -17,6 +19,7 @@ export class level3 extends Phaser.Scene {
         this.load.image('paused', 'assets/img/paused.png'); // Imagen para indicar que está pausado
 
         this.player2.preload();
+        this.Player3.preload();
     }
 
     create() {
@@ -53,6 +56,7 @@ export class level3 extends Phaser.Scene {
         this.pausedImage.setVisible(false); // Ocultar inicialmente
 
         this.player2.create();
+        this.Player3.create();
     }
 
     update(time, delta) {
@@ -61,6 +65,7 @@ export class level3 extends Phaser.Scene {
         }
 
         this.player2.update();
+        this.Player3.update();
 
         // Lógica del juego que solo se ejecuta cuando no está pausado
         // Por ejemplo, actualización de sprites, física, etc.
