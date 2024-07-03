@@ -9,7 +9,7 @@ export class Plataformas {
         this.myScene.load.image('tiles2', '../assets/img/tilesets/nature-paltformer-tileset-16x16.png');
         this.myScene.load.tilemapTiledJSON('tilemapJSON', '../json/Level1.json');
 
-        // Carga de spritesheets para las monedas
+        // Carga de spritesheets para las monedas Juego
         this.myScene.load.spritesheet('coin', '../assets/img/items/MonedaR.png', { frameWidth: 16, frameHeight: 16 });
         this.myScene.load.spritesheet('coinF', '../assets/img/items/MonedaD.png', { frameWidth: 16, frameHeight: 16 });
     }
