@@ -9,7 +9,7 @@ export class Level1 extends Phaser.Scene {
         this.plataformas = new Plataformas(this); // Cambio de nombre a minúscula para seguir convención
         this.items = new Items(this);
         this.player = new Player(this);
-        this.score = 0; // Variable para el puntaje total
+        this.score = 0; // Variable para el puntaje total del juego
     }
 
     preload() {
