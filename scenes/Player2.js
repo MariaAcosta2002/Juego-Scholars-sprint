@@ -10,82 +10,70 @@ export class Player2 {
 
     create() {
         // Player physics
-        this.Player = this.myScene.physics.add.sprite(50, 50, 'player');
+        this.Player = this.myScene.physics.add.sprite(100, 100, 'player'); // Ajusta la posición inicial
         this.Player.body.setSize(this.Player.width * 0.4, this.Player.height * 0.6);
         this.Player.body.setOffset(this.Player.width * 0.3, this.Player.height * 0.1);
         this.Player.setBounce(0.2);
         this.Player.setCollideWorldBounds(true);
 
         // Set initial direction and speed
-        this.movingRight = true;
         this.speed = 160;
-
-        // Add a timer for jumping
-        this.jumpTimer = this.myScene.time.addEvent({
-            delay: 2000, // Time in milliseconds between jumps
-            callback: this.jump,
-            callbackScope: this,
-            loop: true
-        });
+        this.bombThrowDelay = 2000; // Delay for throwing bombs
+        this.lastBombTime = 0;
 
         // Add bombs group
         this.bombs = this.myScene.physics.add.group();
-
-        // Setup bomb collision
-        this.myScene.physics.add.collider(this.bombs, this.myScene.physics.world.bounds);
         
-        // Add a timer for throwing bombs
-        this.throwTimer = this.myScene.time.addEvent({
-            delay: 1000, // Time in milliseconds between throws
-            callback: this.throwBomb,
-            callbackScope: this,
-            loop: true
-        });
+        // Ensure Player2 collides with platforms
+        this.myScene.physics.add.collider(this.Player, this.myScene.plataformas.layer1);
+
+        // Set up collision between bombs and Player1
+        this.myScene.physics.add.collider(this.bombs, this.myScene.player.Player, this.hitPlayer1, null, this);
     }
 
-    update() {
-        // Automatic horizontal movement
-        if (this.movingRight) {
-            this.Player.setVelocityX(this.speed);
-            this.Player.flipX = false;
-        } else {
-            this.Player.setVelocityX(-this.speed);
-            this.Player.flipX = true;
-        }
+    update(time) {
+        const player1 = this.myScene.player.Player;
+        const distanceToPlayer1 = Phaser.Math.Distance.Between(this.Player.x, this.Player.y, player1.x, player1.y);
 
-        // Change direction if player reaches screen edge or avoids bomb
-        if (this.Player.body.blocked.right) {
-            this.movingRight = false;
-        } else if (this.Player.body.blocked.left) {
-            this.movingRight = true;
-        }
-
-        // Avoid bombs
-        this.bombs.children.iterate((bomb) => {
-            if (Phaser.Math.Distance.Between(this.Player.x, this.Player.y, bomb.x, bomb.y) < 50) {
-                if (this.movingRight) {
-                    this.Player.setVelocityX(-this.speed);
-                    this.movingRight = false;
-                } else {
-                    this.Player.setVelocityX(this.speed);
-                    this.movingRight = true;
-                }
+        // Move towards Player1
+        if (distanceToPlayer1 > 50) { // Adjust distance threshold as needed
+            if (this.Player.x < player1.x) {
+                this.Player.setVelocityX(this.speed);
+                this.Player.flipX = false;
+            } else {
+                this.Player.setVelocityX(-this.speed);
+                this.Player.flipX = true;
             }
-        });
-    }
+        } else {
+            this.Player.setVelocityX(0);
+        }
 
-    jump() {
-        if (this.Player.body.blocked.down) {
-            this.Player.setVelocityY(-400);
+        // Check if Player2 is stuck and jump if necessary
+        if (this.Player.body.blocked.down && !this.Player.body.touching.down) {
+            this.Player.setVelocityY(-300); // Adjust jump force as needed
+        }
+
+        // Throw bombs at Player1
+        if (time - this.lastBombTime > this.bombThrowDelay) {
+            this.throwBomb();
+            this.lastBombTime = time;
         }
     }
 
     throwBomb() {
+        const player1 = this.myScene.player.Player;
         const bomb = this.bombs.create(this.Player.x, this.Player.y, 'bomb');
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
-        bomb.setVelocity(Phaser.Math.Between(-200, 200), -200);
-
+        
+        // Calculate velocity towards Player1
+        const angle = Phaser.Math.Angle.Between(this.Player.x, this.Player.y, player1.x, player1.y);
+        const speed = 200; // Adjust bomb speed as needed
+        bomb.setVelocity(
+            Math.cos(angle) * speed,
+            Math.sin(angle) * speed
+        );
+        
         // Destroy bomb after 3 seconds
         this.myScene.time.addEvent({
             delay: 3000,
@@ -94,5 +82,11 @@ export class Player2 {
             },
             callbackScope: this
         });
+    }
+
+    hitPlayer1(player1, bomb) {
+        bomb.destroy(); // Destroy the bomb on impact
+        // Handle the player1 losing logic
+        this.myScene.scene.start('gameover'); // Change to your game over scene
     }
 }

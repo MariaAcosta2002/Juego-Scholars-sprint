@@ -12,7 +12,7 @@ export class niveles extends Phaser.Scene {
         this.load.image('btnNivel5', 'assets/img/nivel5.png');
         this.load.image('btnNivel6', 'assets/img/nivel6.png');
         this.load.image('btnMenu', 'assets/img/regresar.png');
-        this.load.audio('backgroundMusic', 'assets/audio/menu.mp3')
+        this.load.audio('backgroundMusic', 'assets/audio/menu.mp3');
     }
 
     create() {
@@ -33,8 +33,6 @@ export class niveles extends Phaser.Scene {
                 this.backgroundMusic.stop();
             }
         });
-
-
 
         const niveles = [
             { key: 'btnNivel1', scene: 'level1' },
@@ -60,6 +58,7 @@ export class niveles extends Phaser.Scene {
 
             let boton = this.add.image(x, y, niveles[i].key).setInteractive();
             boton.on('pointerdown', () => {
+                this.scene.stop('niveles');  // Stop the niveles scene
                 this.scene.start(niveles[i].scene);
             });
         }
@@ -67,6 +66,7 @@ export class niveles extends Phaser.Scene {
         // Add the main menu button
         let botonMenu = this.add.image(40, 40, 'btnMenu').setInteractive();
         botonMenu.on('pointerdown', () => {
+            this.scene.stop('niveles');  // Stop the niveles scene
             this.scene.start('start');
         });
     }
